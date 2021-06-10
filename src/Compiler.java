@@ -2,12 +2,14 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 public class Compiler {
 
     private BufferedReader file;
     private Hashtable<String, String> symbolTable;
+    private final LexicalAnalyzer lexicalAnalyzer;
 
     public Compiler(String filename) {
         try {
@@ -16,15 +18,21 @@ public class Compiler {
             System.err.println("File not found");
         }
         this.initSymbolTable();
+        this.lexicalAnalyzer = new LexicalAnalyzer();
     }
 
     public void compile(){
         String line;
         Tape tape = new Tape();
+        ArrayList<Token> tokens;
+        int lineNumber = 0;
         try{
             while( (line = this.file.readLine()) != null ) {
+                lineNumber++;
                 tape.replace(line);
-                //TODO analizador lexico
+                tokens = lexicalAnalyzer.processTape(tape);
+                System.out.printf("Line: %d\n", lineNumber);
+                showTokens(tokens);
             }
         }catch (IOException e){
             System.err.println("Failed to read all source code");
@@ -69,4 +77,10 @@ public class Compiler {
         this.symbolTable.put(")", "sym_rightParenthesis");
     }
 
+    private void showTokens(ArrayList<Token> tokens){
+        System.out.println("Valid? | Token");
+        for (Token token : tokens) {
+            System.out.println(token.isValid() + " | " + token.getValue());
+        }
+    }
 }
