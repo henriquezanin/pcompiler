@@ -3,7 +3,7 @@ public class CmdLineAutomaton implements Automaton {
         if(executeRules(tape)){
             Token token = new Token();
             token.setValue(tape.getLine());
-            token.setValid(true);
+            token.setValid();
             return token;
         }
         return null;
