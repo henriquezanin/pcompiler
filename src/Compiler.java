@@ -30,9 +30,6 @@ public class Compiler {
             System.err.println("Failed to read all source code");
             e.printStackTrace();
         }
-//        while (tape.hasNext()) {
-//            System.out.println(tape.next());
-//        }
     }
 
     private void initSymbolTable(){
