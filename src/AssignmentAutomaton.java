@@ -24,6 +24,7 @@ public class AssignmentAutomaton implements Automaton {
                             return tok;                        
                         }
                     } else {
+                        tape.rollback();
                         return null;
                     }
                     break;

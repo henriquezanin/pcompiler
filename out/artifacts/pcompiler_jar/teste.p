@@ -1,6 +1,5 @@
 { Esse é um programa escrito em p--}
 { O objetivo é calcular o fatorial de um número x dado pelo usuário }
-@
 program fatorial;
 var x, aux, fat: integer;
 begin
