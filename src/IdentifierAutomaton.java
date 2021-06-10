@@ -16,10 +16,10 @@ public class IdentifierAutomaton implements Automaton {
                         str = str.concat(Character.toString(ch));
 
                         if (!tape.hasNext()) {
-                            tok.setValid(true);
+                            tok.setValid();
                             tok.setValue(str);
                     
-                            return tok;                          
+                            return tok;
                         } else {
                             state = 1;
                         }
@@ -33,7 +33,7 @@ public class IdentifierAutomaton implements Automaton {
                         str = str.concat(Character.toString(ch));
 
                         if (!tape.hasNext()) {
-                            tok.setValid(true);
+                            tok.setValid();
                             tok.setValue(str);
 
                             return tok;
@@ -43,7 +43,7 @@ public class IdentifierAutomaton implements Automaton {
                     } else {
                         tape.rollback();
 
-                        tok.setValid(true);
+                        tok.setValid();
                         tok.setValue(str);
 
                         return tok;

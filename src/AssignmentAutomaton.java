@@ -18,7 +18,7 @@ public class AssignmentAutomaton implements Automaton {
                         if (tape.hasNext()) {
                             state = 1;
                         } else {
-                            tok.setValid(true);
+                            tok.setValid();
                             tok.setValue(str);
                     
                             return tok;                        
@@ -34,7 +34,7 @@ public class AssignmentAutomaton implements Automaton {
                         tape.rollback();
                     }
 
-                    tok.setValid(true);
+                    tok.setValid();
                     tok.setValue(str);
                     
                     return tok;
