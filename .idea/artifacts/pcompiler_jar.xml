@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="pcompiler:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/pcompiler_jar</output-path>
+    <root id="archive" name="pcompiler.jar">
+      <element id="module-output" name="pcompiler" />
+    </root>
+  </artifact>
+</component>
