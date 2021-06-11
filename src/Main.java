@@ -23,10 +23,10 @@ public class Main {
                         break;
                 }
             }
-//            else {
-//                Compiler p = new Compiler(input);
-//                p.compile();
-//            }
+            else {
+                Compiler p = new Compiler(input);
+                p.compile();
+            }
         }
         else{
             System.out.println("Invalid input, use -h to se options");
