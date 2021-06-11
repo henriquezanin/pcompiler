@@ -1,7 +1,16 @@
 public class Token {
 
-    String value;
-    boolean isValid;
+    private String value;
+    private boolean isValid;
+
+    public Token(){
+        this.isValid = false;
+    }
+
+    public Token(String string){
+        this.isValid = false;
+        value = string;
+    }
 
     public String getValue() {
         return value;
@@ -15,7 +24,7 @@ public class Token {
         this.value = value;
     }
 
-    public void setValid(boolean valid) {
-        isValid = valid;
+    public void setValid() {
+        isValid = true;
     }
 }
