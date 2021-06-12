@@ -1,11 +1,6 @@
 public class CommentAutomaton implements Automaton {
     public Token eval(Tape tape) {
-        if(executeRules(tape)){
-            Token token = new Token();
-            token.setValue(tape.getLine());
-            token.setValid();
-            return token;
-        }
+        executeRules(tape);
         return null;
     }
 

@@ -7,10 +7,9 @@ public class NumbersAutomaton implements Automaton {
 
         while(tape.hasNext()) {
             ch = tape.next();
-
             switch (state) {
                 case 0:
-                    if (Character.isWhitespace(ch) || ch == '\n' || ch == '\t') {
+                    if (Character.isWhitespace(ch)) {
                         state = 0;
                     } else if (Character.isDigit(ch)) {
                         str = str.concat(Character.toString(ch));

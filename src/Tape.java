@@ -46,4 +46,13 @@ public class Tape {
     public String getLine(){
         return this.line;
     }
+
+    public int getHeadPosition(){
+        return this.head;
+    }
+
+    public int getLenght(){
+        return this.lenght;
+    }
+
 }

@@ -8,8 +8,12 @@ public class LexicalAnalyzer {
     public  LexicalAnalyzer(){
         this.allAutomatons = new ArrayList<>();
         this.allAutomatons.add(new WhitelistAutomaton());
+        this.allAutomatons.add(new NumbersAutomaton());
         this.allAutomatons.add(new AssignmentAutomaton());
+        this.allAutomatons.add(new RelationalAutomaton());
         this.allAutomatons.add(new IdentifierAutomaton());
+        this.allAutomatons.add(new CommentAutomaton());
+        //this.allAutomatons.add(new OtherSymbolsAutomaton());
     }
 
     public ArrayList<Token> processTape(Tape tape){

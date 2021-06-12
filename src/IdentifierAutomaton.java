@@ -10,20 +10,19 @@ public class IdentifierAutomaton implements Automaton {
 
             switch (state) {
                 case 0:
-                    if (Character.isWhitespace(ch) || ch == '\n' || ch == '\t') {
+                    if (Character.isWhitespace(ch)) {
                         state = 0;
                     } else if (Character.isLetter(ch)) {
                         str = str.concat(Character.toString(ch));
-
                         if (!tape.hasNext()) {
                             tok.setValid();
                             tok.setValue(str);
-                    
                             return tok;
                         } else {
                             state = 1;
                         }
                     } else {
+                        tape.rollback();
                         return null;
                     }
                     break;

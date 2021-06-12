@@ -10,6 +10,10 @@ public class WhitelistAutomaton implements Automaton{
             tape.rollback();
             return null;
         }
+        else if(Character.isDigit(ch)){
+            tape.rollback();
+            return null;
+        }
         else {
             String str = "";
             str += ch;
