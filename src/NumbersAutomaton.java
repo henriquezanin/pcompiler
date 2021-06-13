@@ -13,26 +13,12 @@ public class NumbersAutomaton implements Automaton {
                         state = 0;
                     } else if (Character.isDigit(ch)) {
                         str = str.concat(Character.toString(ch));
-
                         if (!tape.hasNext()) {
                             tok.setValid();
                             tok.setValue(str);
-
                             return tok;
                         } else {
                             state = 1;
-                        }
-                    } else if (ch == '-' || ch == '+') {
-                        str = str.concat(Character.toString(ch));
-
-                        if (!tape.hasNext()) {
-                            tape.rollback();
-                            tok.setValid();
-                            tok.setValue(str);
-
-                            return tok;
-                        } else {
-                            state = 6;
                         }
                     } else {
                         tape.rollback();
@@ -104,26 +90,6 @@ public class NumbersAutomaton implements Automaton {
                             return tok;
                         } else {
                             state = 5;
-                        }                        
-                    } else {
-                        tape.rollback();
-                        tok.setValid();
-                        tok.setValue(str);
-
-                        return tok;                        
-                    }
-                    break;
-                case 6:
-                    if (Character.isDigit(ch)) {
-                        str = str.concat(Character.toString(ch));
-
-                        if (!tape.hasNext()) {
-                            tok.setValid();
-                            tok.setValue(str);
-
-                            return tok;
-                        } else {
-                            state = 1;
                         }                        
                     } else {
                         tape.rollback();
