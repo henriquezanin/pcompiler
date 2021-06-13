@@ -22,7 +22,7 @@ public class OtherSymbolsAutomaton implements Automaton {
 
     private boolean acceptedSymbols(char ch) {
         return switch (ch) {
-            case ';', '.', '/', '*', ',', '(', ')' -> true;
+            case ';', '.', '/', '*', ',', '(', ')', '+', '-' -> true;
             default -> false;
         };
     }
