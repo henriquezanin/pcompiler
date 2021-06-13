@@ -1,28 +1,23 @@
 public class OtherSymbolsAutomaton implements Automaton {
     public Token eval(Tape tape) {
-        if(executeRules(tape)){
-            Token token = new Token();
-            token.setValue(tape.getLine());
-            token.setValid();
-            return token;
-        }
-        return null;
-    }
 
-    private boolean executeRules(Tape tape) {
-        char ch;
+        char ch = 'a';
         if (tape.hasNext()) {
             ch = tape.next();
             if (acceptedSymbols(ch)) {
-                return true;
+                Token token = new Token();
+                token.setValue(Character.toString(ch));
+                token.setValid();
+                return token;
             } else {
                 tape.rollback();
-                return false;
+                return null;
             }
 
         } else {
-            return false;
+            return null;
         }
+
     }
 
     private boolean acceptedSymbols(char ch) {

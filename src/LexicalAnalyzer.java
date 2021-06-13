@@ -13,7 +13,7 @@ public class LexicalAnalyzer {
         this.allAutomatons.add(new RelationalAutomaton());
         this.allAutomatons.add(new IdentifierAutomaton());
         this.allAutomatons.add(new CommentAutomaton());
-        //this.allAutomatons.add(new OtherSymbolsAutomaton());
+        this.allAutomatons.add(new OtherSymbolsAutomaton());
     }
 
     public ArrayList<Token> processTape(Tape tape){
