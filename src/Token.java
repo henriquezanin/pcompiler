@@ -2,6 +2,7 @@ public class Token {
 
     private String value;
     private boolean isValid;
+    private String id;
 
     public Token(){
         this.isValid = false;
@@ -26,5 +27,13 @@ public class Token {
 
     public void setValid() {
         isValid = true;
+    }
+
+    public void setId(String id){
+        this.id = id;
+    }
+
+    public String getId() {
+        return this.id;
     }
 }
