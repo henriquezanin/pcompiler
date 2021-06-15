@@ -1,7 +1,6 @@
 public class OtherSymbolsAutomaton implements Automaton {
     public Token eval(Tape tape) {
-
-        char ch = 'a';
+        char ch;
         if (tape.hasNext()) {
             ch = tape.next();
             if (acceptedSymbols(ch)) {
@@ -13,11 +12,9 @@ public class OtherSymbolsAutomaton implements Automaton {
                 tape.rollback();
                 return null;
             }
-
         } else {
             return null;
         }
-
     }
 
     private boolean acceptedSymbols(char ch) {

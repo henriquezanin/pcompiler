@@ -11,7 +11,7 @@ public class CommentAutomaton implements Automaton {
             ch = tape.next();
             switch (state) {
                 case 0:
-                    if (ch == '\t' || ch == '\n' || ch == '\r' || Character.isWhitespace(ch)) {
+                    if (Character.isWhitespace(ch)) {
                         state = 0;
                     } else if (ch == '{') {
                         state = 1;
@@ -21,7 +21,7 @@ public class CommentAutomaton implements Automaton {
                     }
                     break;
                 case 1:
-                    if (ch == '\n' || ch == '\r' || ch == Character.MIN_VALUE) {
+                    if (ch == Character.MIN_VALUE) {
                         tape.rollback();
                         return false;
                     } else if (ch != '}') {

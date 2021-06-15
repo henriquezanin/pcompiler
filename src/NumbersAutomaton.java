@@ -16,6 +16,7 @@ public class NumbersAutomaton implements Automaton {
                         if (!tape.hasNext()) {
                             tok.setValid();
                             tok.setValue(str);
+                            tok.setId("number");
                             return tok;
                         } else {
                             state = 1;
@@ -28,11 +29,10 @@ public class NumbersAutomaton implements Automaton {
                 case 1:
                     if (Character.isDigit(ch)) {
                         str = str.concat(Character.toString(ch));
-
                         if (!tape.hasNext()) {
                             tok.setValid();
                             tok.setValue(str);
-
+                            tok.setId("number");
                             return tok;
                         } else {
                             state = 1;
@@ -42,7 +42,7 @@ public class NumbersAutomaton implements Automaton {
                             tape.rollback();
                             tok.setValid();
                             tok.setValue(str);
-
+                            tok.setId("number");
                             return tok;
                         } else {
                             str = str.concat(Character.toString(ch));
@@ -52,7 +52,7 @@ public class NumbersAutomaton implements Automaton {
                         tape.rollback();
                         tok.setValid();
                         tok.setValue(str);
-
+                        tok.setId("number");
                         return tok;
                     }
                     break;
@@ -63,30 +63,28 @@ public class NumbersAutomaton implements Automaton {
                         if (!tape.hasNext()) {
                             tok.setValid();
                             tok.setValue(str);
-
+                            tok.setId("number");
                             return tok;
                         } else {
                             state = 5;
                         }                        
                     } else {
                         str = str.substring(0, str.length() - 1);
-                        
                         tape.rollback();
                         tape.rollback();
                         tok.setValid();
                         tok.setValue(str);
-
+                        tok.setId("number");
                         return tok;
                     }
                     break;
                 case 5:
                     if (Character.isDigit(ch)) {
                         str = str.concat(Character.toString(ch));
-
                         if (!tape.hasNext()) {
                             tok.setValid();
                             tok.setValue(str);
-
+                            tok.setId("number");
                             return tok;
                         } else {
                             state = 5;
@@ -95,13 +93,12 @@ public class NumbersAutomaton implements Automaton {
                         tape.rollback();
                         tok.setValid();
                         tok.setValue(str);
-
-                        return tok;                        
+                        tok.setId("number");
+                        return tok;
                     }
                     break;
             }
         }
-        
         return null;
     }
 }

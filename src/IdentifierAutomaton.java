@@ -4,10 +4,8 @@ public class IdentifierAutomaton implements Automaton {
         String str = "";
         Token tok = new Token();
         int state = 0;
-
         while(tape.hasNext()) {
             ch = tape.next();
-
             switch (state) {
                 case 0:
                     if (Character.isWhitespace(ch)) {
@@ -30,27 +28,22 @@ public class IdentifierAutomaton implements Automaton {
                     if (Character.isLetter(ch) || Character.isDigit(ch) || 
                         ch == '_' || ch == '-') {
                         str = str.concat(Character.toString(ch));
-
                         if (!tape.hasNext()) {
                             tok.setValid();
                             tok.setValue(str);
-
                             return tok;
                         } else {
                             state = 1;
                         }
                     } else {
                         tape.rollback();
-
                         tok.setValid();
                         tok.setValue(str);
-
                         return tok;
                     }
                     break;
             }
         }
-        
         return null;
     }
 }

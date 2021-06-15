@@ -8,6 +8,7 @@ public class CmdLineAutomaton implements Automaton {
         }
         return null;
     }
+
     private boolean executeRules(Tape tape) {
         int state = 0;
         char ch;
@@ -26,7 +27,7 @@ public class CmdLineAutomaton implements Automaton {
                     }
                     break;
                 case 1:
-                    if(Character.isLetter(ch)) {
+                    if(Character.isLetter(ch) || ch == '-' || ch == '_') {
                         state = 1;
                     }
                     else if(ch == '.'){

@@ -3,7 +3,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Hashtable;
 
 public class Compiler {
 
@@ -11,25 +10,31 @@ public class Compiler {
     private final LexicalAnalyzer lexicalAnalyzer;
 
     public Compiler(String filename) {
+        // Tenta abrir o arquivo, se não lança uma exceção
         try {
             this.file = new BufferedReader(new FileReader(filename));
         } catch (FileNotFoundException e){
             System.err.println("File not found");
         }
+        // Instancia o analizador léxico
         this.lexicalAnalyzer = new LexicalAnalyzer();
     }
 
     public void compile(){
         String line;
+        // Intancia uma nova string na fita
         Tape tape = new Tape();
         ArrayList<Token> tokens;
         int lineNumber = 0;
-        System.out.println("Token | ID | Valid?");
         try{
+            // Lê todas as linhas do arquivo
             while( (line = this.file.readLine()) != null ) {
                 lineNumber++;
+                // Substitui a string na fita
                 tape.replace(line);
+                // Executa o analizador lexico para a fita
                 tokens = lexicalAnalyzer.processTape(tape);
+                // Caso haja algum caractere inválido uma mensagem de erro é exibida
                 if(showTokens(tokens)){
                     System.out.printf("Line %d: Has invalid character\n", lineNumber);
                 }
@@ -40,13 +45,18 @@ public class Compiler {
         }
     }
 
+    // Exibe os tokens processados pelo analizador léxico e verifica os que estão na tabela de símbolos
+    // Retorna true caso haja algum token invalido
     private boolean showTokens(ArrayList<Token> tokens){
         boolean hasInvalid = false;
         for (Token token : tokens) {
+            System.out.printf("%s, ", token.getValue());
             if(!token.isValid()){
                 hasInvalid = true;
+                System.out.printf("erro(\"caractere não permitido\")\n");
+            } else {
+                System.out.println(token.getId());
             }
-            System.out.println(token.getValue() + " | " + token.getId() + " | " + token.isValid());
         }
         return hasInvalid;
     }

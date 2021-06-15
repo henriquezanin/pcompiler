@@ -3,12 +3,12 @@ import java.util.Hashtable;
 
 public class LexicalAnalyzer {
 
-    private Tape tape;
     private final ArrayList<Automaton> allAutomatons;
     private Hashtable<String, String> symbolTable;
 
     public  LexicalAnalyzer(){
         this.initSymbolTable();
+        // Instancia todos os automatos em um ArrayList
         this.allAutomatons = new ArrayList<>();
         this.allAutomatons.add(new WhitelistAutomaton());
         this.allAutomatons.add(new NumbersAutomaton());
@@ -19,6 +19,8 @@ public class LexicalAnalyzer {
         this.allAutomatons.add(new OtherSymbolsAutomaton());
     }
 
+    // Percorre a fita inteira até que todos o caracteres sejam consumidos
+    // Retorna um ArrayList contendo todos os tokens processados pelos autômatos
     public ArrayList<Token> processTape(Tape tape){
         ArrayList<Token> tokens = new ArrayList<>();
         Token tmpToken;
@@ -69,10 +71,15 @@ public class LexicalAnalyzer {
         this.symbolTable.put(",", "sym_comma");
         this.symbolTable.put("(", "sym_leftParenthesis");
         this.symbolTable.put(")", "sym_rightParenthesis");
+        this.symbolTable.put("for", "sym_for");
     }
 
+    // Define o id do token processado. Para isso utiliza-se a tabela de simbolos
     public void setID(Token token){
         String id = this.symbolTable.get(token.getValue());
+        if(token.getId() != null && !token.getId().isEmpty()){
+            return;
+        }
         if(id != null) {
             token.setId(id);
         } else{
