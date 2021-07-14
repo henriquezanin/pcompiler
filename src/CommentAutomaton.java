@@ -1,10 +1,7 @@
 public class CommentAutomaton implements Automaton {
-    public Token eval(Tape tape) {
-        executeRules(tape);
-        return null;
-    }
 
-    private boolean executeRules(Tape tape) {
+    public Token eval(Tape tape) {
+        Token token = new Token();
         int state = 0;
         char ch;
         while(tape.hasNext()) {
@@ -17,21 +14,22 @@ public class CommentAutomaton implements Automaton {
                         state = 1;
                     } else {
                         tape.rollback();
-                        return false;
+                        return null;
                     }
                     break;
                 case 1:
-                    if (ch == Character.MIN_VALUE) {
-                        tape.rollback();
-                        return false;
-                    } else if (ch != '}') {
+                    if (ch != '}') {
                         state = 1;
                     } else {
-                        return true;
+                        return null;
                     }
                     break;
             }
         }
-        return false;
+        if(state == 1) {
+            token.setValue(tape.getLine());
+            return token;
+        }
+        return null;
     }
 }

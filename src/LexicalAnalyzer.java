@@ -1,3 +1,7 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -5,8 +9,11 @@ public class LexicalAnalyzer {
 
     private final ArrayList<Automaton> allAutomatons;
     private Hashtable<String, String> symbolTable;
+    private BufferedReader file;
+    private Tape tape;
+    private int lineNumber;
 
-    public  LexicalAnalyzer(){
+    public  LexicalAnalyzer(String filename){
         this.initSymbolTable();
         // Instancia todos os automatos em um ArrayList
         this.allAutomatons = new ArrayList<>();
@@ -17,23 +24,51 @@ public class LexicalAnalyzer {
         this.allAutomatons.add(new IdentifierAutomaton());
         this.allAutomatons.add(new CommentAutomaton());
         this.allAutomatons.add(new OtherSymbolsAutomaton());
+        // Tenta abrir o arquivo, se não lança uma exceção
+        try {
+            this.file = new BufferedReader(new FileReader(filename));
+        } catch (FileNotFoundException e){
+            System.err.println("File not found");
+        }
+        // Inicializa a fita
+        this.tape = new Tape();
+        this.lineNumber = 0;
+        this.replaceTape();
     }
 
-    // Percorre a fita inteira até que todos o caracteres sejam consumidos
-    // Retorna um ArrayList contendo todos os tokens processados pelos autômatos
-    public ArrayList<Token> processTape(Tape tape){
-        ArrayList<Token> tokens = new ArrayList<>();
-        Token tmpToken;
-        while(tape.hasNext()){
-            for (Automaton allAutomaton : this.allAutomatons) {
-                tmpToken = allAutomaton.eval(tape);
-                if (tmpToken != null) {
-                    setID(tmpToken);
-                    tokens.add(tmpToken);
-                }
+    public Token nextSymbol() {
+        Token token = null;
+        if (!this.tape.hasNext()) {
+            if (!this.replaceTape()) {
+                return null;
             }
         }
-        return tokens;
+        for (Automaton allAutomaton : this.allAutomatons) {
+            token = allAutomaton.eval(this.tape);
+            if (token != null) {
+                setID(token);
+                return token;
+            }
+        }
+        return null;
+    }
+
+    private boolean replaceTape(){
+        String line;
+        try{
+            line = this.file.readLine();
+        }catch (
+        IOException e){
+            System.err.println("Failed to read all source code");
+            e.printStackTrace();
+            return false;
+        }
+        if(line == null){
+            return false;
+        }
+        this.lineNumber++;
+        tape.replace(line);
+        return true;
     }
 
     private void initSymbolTable(){
@@ -82,7 +117,7 @@ public class LexicalAnalyzer {
         }
         if(id != null) {
             token.setId(id);
-        } else{
+        } else if (token.isValid()){
             token.setId("ident");
         }
     }
