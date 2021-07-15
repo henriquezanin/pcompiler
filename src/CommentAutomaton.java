@@ -21,7 +21,9 @@ public class CommentAutomaton implements Automaton {
                     if (ch != '}') {
                         state = 1;
                     } else {
-                        return null;
+                        //token.setValue(tape.getLine());
+                        token.setId("comment");
+                        return token;
                     }
                     break;
             }

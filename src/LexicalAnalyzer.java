@@ -47,11 +47,17 @@ public class LexicalAnalyzer {
         }
         for (Automaton allAutomaton : this.allAutomatons) {
             token = allAutomaton.eval(this.tape);
-            if (token != null) {
+            if (token != null && token.getId() == null) {
                 setID(token);
+                this.currentToken = token;
+                return token;
+            } else if (token != null && token.getId() != null && token.getId().equals("comment")){
+                this.nextSymbol();
+            } else if (token != null && token.getId() != null && token.getId().equals("number")){
+                this.currentToken = token;
                 return token;
             }
-        }
+    }
         return null;
     }
 
@@ -63,6 +69,9 @@ public class LexicalAnalyzer {
         String line;
         try{
             line = this.file.readLine();
+            while (line.isEmpty()){
+                line = this.file.readLine();
+            }
         }catch (
         IOException e){
             System.err.println("Failed to read all source code");
