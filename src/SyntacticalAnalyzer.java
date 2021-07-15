@@ -52,7 +52,12 @@ public class SyntacticalAnalyzer {
         symbol = lexical.nextSymbol();
         // Espera begin como próximo token
         if(symbol != null && symbol.getId().equals("sym_begin")){
-            comandos();
+            // Executa o procedimento comandos
+            boolean wasExecuted = comandos();
+            if(!wasExecuted){
+                erro();
+                return false;
+            }
         }
         else {
             erro();
