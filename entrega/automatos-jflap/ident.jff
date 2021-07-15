@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--Created with JFLAP 7.1.--><structure>
+	<type>moore</type>
+	<automaton>
+		<!--The list of states.-->
+		<state id="0" name="q0">
+			<x>202.0</x>
+			<y>208.0</y>
+			<initial/>
+			<output/>
+		</state>
+		<state id="1" name="q1">
+			<x>343.0</x>
+			<y>210.0</y>
+			<output/>
+		</state>
+		<state id="2" name="q2">
+			<x>504.0</x>
+			<y>155.0</y>
+			<output>return(chain, ident|reserved) rollback()</output>
+		</state>
+		<!--The list of transitions.-->
+		<transition>
+			<from>0</from>
+			<to>1</to>
+			<read>A..Z</read>
+			<transout/>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>1</to>
+			<read>a..z</read>
+			<transout/>
+		</transition>
+		<transition>
+			<from>1</from>
+			<to>1</to>
+			<read>a..z</read>
+			<transout/>
+		</transition>
+		<transition>
+			<from>1</from>
+			<to>1</to>
+			<read>A..Z</read>
+			<transout/>
+		</transition>
+		<transition>
+			<from>1</from>
+			<to>2</to>
+			<read>outro simbolo</read>
+			<transout>return(chain, ident|reserved) rollback()</transout>
+		</transition>
+		<transition>
+			<from>1</from>
+			<to>1</to>
+			<read>-</read>
+			<transout/>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>0</to>
+			<read>' '</read>
+			<transout/>
+		</transition>
+		<transition>
+			<from>1</from>
+			<to>1</to>
+			<read>0..9</read>
+			<transout/>
+		</transition>
+		<transition>
+			<from>1</from>
+			<to>1</to>
+			<read>_</read>
+			<transout/>
+		</transition>
+	</automaton>
+</structure>

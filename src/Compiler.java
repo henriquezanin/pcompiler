@@ -1,20 +1,23 @@
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-
 public class Compiler {
 
     private final LexicalAnalyzer lexicalAnalyzer;
+    private final SyntacticalAnalyzer syntacticalAnalyzer;
 
     public Compiler(String filename) {
         // Instancia o analizador léxico
         this.lexicalAnalyzer = new LexicalAnalyzer(filename);
+        this.syntacticalAnalyzer = new SyntacticalAnalyzer(lexicalAnalyzer);
     }
 
     public void compile(){
-        Token token = this.lexicalAnalyzer.nextSymbol();
+        boolean wasExecuted = syntacticalAnalyzer.execute();
+        if(!wasExecuted){
+            System.out.println("Falha na compilação!");
+        }
+        else{
+            System.out.println("Compilação concluida com sucesso");
+        }
+        /*Token token = this.lexicalAnalyzer.nextSymbol();
         while (token != null){
             System.out.printf("%-20s |", token.getValue());
             if(!token.isValid()){
@@ -23,6 +26,6 @@ public class Compiler {
                 System.out.println(token.getId());
             }
             token = this.lexicalAnalyzer.nextSymbol();
-        }
+        }*/
     }
 }

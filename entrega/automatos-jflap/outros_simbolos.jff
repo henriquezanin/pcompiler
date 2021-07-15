@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--Created with JFLAP 7.1.--><structure>
+	<type>moore</type>
+	<automaton>
+		<!--The list of states.-->
+		<state id="0" name="q0">
+			<x>361.0</x>
+			<y>304.0</y>
+			<initial/>
+			<output/>
+		</state>
+		<state id="1" name="q1">
+			<x>920.0</x>
+			<y>291.0</y>
+			<output>return(;, sym_semicolon)</output>
+		</state>
+		<state id="2" name="q2">
+			<x>831.0</x>
+			<y>344.0</y>
+			<output>return(., sym_dot)</output>
+		</state>
+		<state id="3" name="q3">
+			<x>820.0</x>
+			<y>459.0</y>
+			<output>return(*,sym_plus)</output>
+		</state>
+		<state id="4" name="q4">
+			<x>938.0</x>
+			<y>413.0</y>
+			<output>return(/,sym_div)</output>
+		</state>
+		<state id="5" name="q5">
+			<x>676.0</x>
+			<y>485.0</y>
+			<output>return(',', sym_comma)</output>
+		</state>
+		<state id="6" name="q6">
+			<x>481.0</x>
+			<y>498.0</y>
+			<output>return('(', sym_leftParenthesis)</output>
+		</state>
+		<state id="7" name="q7">
+			<x>617.0</x>
+			<y>543.0</y>
+			<output>return(')', sym_rightParenthesis)</output>
+		</state>
+		<state id="8" name="q8">
+			<x>577.0</x>
+			<y>185.0</y>
+			<output>return(null) rollback()</output>
+		</state>
+		<state id="9" name="q9">
+			<x>736.0</x>
+			<y>198.0</y>
+			<output>return(+, sym_plus)</output>
+		</state>
+		<state id="10" name="q10">
+			<x>855.0</x>
+			<y>231.0</y>
+			<output>return(-, sym_minus)</output>
+		</state>
+		<!--The list of transitions.-->
+		<transition>
+			<from>0</from>
+			<to>9</to>
+			<read>+</read>
+			<transout>return(+, sym_plus)</transout>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>4</to>
+			<read>/</read>
+			<transout>return(/,sym_div)</transout>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>8</to>
+			<read>outro</read>
+			<transout>return(null) rollback()</transout>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>6</to>
+			<read>(</read>
+			<transout>return('(', sym_leftParenthesis)</transout>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>1</to>
+			<read>;</read>
+			<transout>return(;, sym_semicolon)</transout>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>2</to>
+			<read>.</read>
+			<transout>return(., sym_dot)</transout>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>7</to>
+			<read>)</read>
+			<transout>return(')', sym_rightParenthesis)</transout>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>10</to>
+			<read>-</read>
+			<transout>return(-, sym_minus)</transout>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>5</to>
+			<read>,</read>
+			<transout>return(',', sym_comma)</transout>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>3</to>
+			<read>*</read>
+			<transout>return(*,sym_plus)</transout>
+		</transition>
+	</automaton>
+</structure>
