@@ -114,7 +114,7 @@ public class LexicalAnalyzer {
         this.symbolTable.put("<", "sym_less");
         this.symbolTable.put("+", "sym_plus");
         this.symbolTable.put("-", "sym_minus");
-        this.symbolTable.put("*", "sym_plus");
+        this.symbolTable.put("*", "sym_mult");
         this.symbolTable.put("/", "sym_div");
         this.symbolTable.put(":=", "sym_atrib");
         this.symbolTable.put("to", "sym_to");
@@ -135,5 +135,9 @@ public class LexicalAnalyzer {
         } else if (token.isValid()){
             token.setId("ident");
         }
+    }
+
+    public int getLineNumber() {
+        return lineNumber;
     }
 }
