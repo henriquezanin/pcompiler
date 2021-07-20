@@ -1,6 +1,11 @@
 public class SyntacticalAnalyzer {
 
     LexicalAnalyzer lexical;
+    public enum PanicLevel {
+        Local,
+        Father,
+        Error
+    }
 
     public SyntacticalAnalyzer(LexicalAnalyzer lexical){
         this.lexical = lexical;
@@ -14,6 +19,20 @@ public class SyntacticalAnalyzer {
         System.out.println("Procedimento de erro: "+funcao);
     }
 
+    private PanicLevel panic(String local, String father){
+        Token symbol = lexical.currentSymbol();
+        while(symbol != null && (!symbol.getId().equals(local) || symbol.getId().equals(father))){
+            symbol = lexical.nextSymbol();
+        }
+        if(symbol == null || symbol.getId().equals(father)){
+            return PanicLevel.Father;
+        }
+        if(symbol != null && symbol.getId().equals(local)){
+            return PanicLevel.Local;
+        }
+        return PanicLevel.Error;
+    }
+
     private boolean programa(){
         Token symbol = lexical.nextSymbol();
         // Se não houver simbolo o compilador não retorna erro
@@ -25,7 +44,8 @@ public class SyntacticalAnalyzer {
             symbol = lexical.nextSymbol();
         }
         else {
-            erro("programa -> sym_program");
+            System.out.printf("Linha %d: \"program\" esperado\n", lexical.getLineNumber());
+//            erro("programa -> sym_program");
             return false;
         }
         // Espera um identificador valido como proximo token
@@ -33,7 +53,8 @@ public class SyntacticalAnalyzer {
             symbol = lexical.nextSymbol();
         }
         else {
-            erro("programa -> ident");
+            System.out.printf("Linha %d: identificador esperado ou mal formado\n", lexical.getLineNumber());
+//            erro("programa -> ident");
             return false;
         }
         // Espera um ";" como próximo token
@@ -42,12 +63,13 @@ public class SyntacticalAnalyzer {
             lexical.nextSymbol();
             boolean wasExecuted = dc();
             if(!wasExecuted){
-                erro("programa -> dc()");
+//                erro("programa -> dc()");
                 return false;
             }
         }
         else {
-            erro("programa -> sym_semicolon");
+            System.out.printf("Linha %d: \";\" esperado\n", lexical.getLineNumber());
+//            erro("programa -> sym_semicolon");
             return false;
         }
         symbol = lexical.currentSymbol();
@@ -57,12 +79,13 @@ public class SyntacticalAnalyzer {
             // Executa o procedimento comandos
             boolean wasExecuted = comandos();
             if(!wasExecuted){
-                erro("programa -> comandos()");
+//                erro("programa -> comandos()");
                 return false;
             }
         }
         else {
-            erro("programa -> sym_begin");
+            System.out.printf("Linha %d: \"begin\" esperado\n", lexical.getLineNumber());
+//            erro("programa -> sym_begin");
             return false;
         }
         symbol = lexical.currentSymbol();
@@ -71,12 +94,14 @@ public class SyntacticalAnalyzer {
             symbol = lexical.nextSymbol();
         }
         else {
-            erro("programa -> sym_end");
+            System.out.printf("Linha %d: \"end\" esperado\n", lexical.getLineNumber());
+//            erro("programa -> sym_end");
             return false;
         }
         // Espera o token "ponto" para finalizar a compilação
         if(symbol == null || !symbol.getId().equals("sym_dot")){
-            erro("programa -> sym_dot");
+            System.out.printf("Linha %d: \".\" esperado\n", lexical.getLineNumber());
+//            erro("programa -> sym_dot");
             return false;
         }
     return true;
@@ -85,17 +110,17 @@ public class SyntacticalAnalyzer {
     private boolean dc(){
         boolean wasExecuted = dc_c();
         if(!wasExecuted){
-            erro("dc_c()");
+//            erro("dc_c()");
             return false;
         }
         wasExecuted = dc_v();
         if(!wasExecuted){
-            erro("dc_v()");
+//            erro("dc_v()");
             return false;
         }
         wasExecuted = dc_p();
         if(!wasExecuted){
-            erro("dc_p()");
+//            erro("dc_p()");
             return false;
         }
         return true;
@@ -103,37 +128,41 @@ public class SyntacticalAnalyzer {
 
     private boolean dc_c(){
         Token symbol = lexical.currentSymbol();
-        if(symbol == null || symbol.getId() != "sym_const"){
+        if(symbol == null || !symbol.getId().equals("sym_const")){
             return true;
         }
         symbol = lexical.nextSymbol();
-        if(symbol != null && symbol.getId() == "ident" && symbol.isValid()){
+        if(symbol != null && symbol.getId().equals("ident") && symbol.isValid()){
             symbol = lexical.nextSymbol();
         }
         else {
-            erro("dc_c -> ident");
+            System.out.printf("Linha %d: identificador esperado ou mal formado\n", lexical.getLineNumber());
+//            erro("dc_c -> ident");
             return false;
         }
-        if(symbol != null && symbol.getId() == "sym_eq"){
+        if(symbol != null && symbol.getId().equals("sym_eq")){
             symbol = lexical.nextSymbol();
         }
         else {
-            erro("dc_c -> sym_eq");
+            System.out.printf("Linha %d: \"=\" esperado\n", lexical.getLineNumber());
+//            erro("dc_c -> sym_eq");
             return false;
         }
-        if(symbol != null && symbol.getId() == "number"){
+        if(symbol != null && symbol.getId().equals("number")){
             symbol = lexical.nextSymbol();
         }
         else {
-            erro("dc_c -> number");
+            System.out.printf("Linha %d: inteiro ou real esperado\n", lexical.getLineNumber());
+//            erro("dc_c -> number");
             return false;
         }
-        if(symbol != null && symbol.getId() == "sym_semicolon"){
+        if(symbol != null && symbol.getId().equals("sym_semicolon")){
             lexical.nextSymbol();
             dc_c();
         }
         else {
-            erro("dc_c -> sym_semicolon");
+            System.out.printf("Linha %d: \";\" esperado\n", lexical.getLineNumber());
+//            erro("dc_c -> sym_semicolon");
             return false;
         }
         return true;
@@ -141,45 +170,50 @@ public class SyntacticalAnalyzer {
 
     private boolean dc_v(){
         Token symbol = lexical.currentSymbol();
-        if(symbol == null || symbol.getId() != "sym_var"){
+        if(symbol == null || !symbol.getId().equals("sym_var")){
             return true;
         }
         symbol = lexical.nextSymbol();
-        if(symbol != null && symbol.getId() == "ident" && symbol.isValid()){
+        if(symbol != null && symbol.getId().equals("ident") && symbol.isValid()){
             symbol = lexical.nextSymbol();
         }
         else {
-            erro("dc_v -> ident");
+            System.out.printf("Linha %d: identificador esperado ou mal formado\n", lexical.getLineNumber());
+//            erro("dc_v -> ident");
             return false;
         }
-        while (symbol != null && symbol.getId() == "sym_comma") {
+        while (symbol != null && symbol.getId().equals("sym_comma")) {
             symbol = lexical.nextSymbol();
-            if (symbol != null && symbol.getId() == "ident" && symbol.isValid()) {
+            if (symbol != null && symbol.getId().equals("ident") && symbol.isValid()) {
                 symbol = lexical.nextSymbol();
             } else {
-                erro("dc_v -> ident");
+                System.out.printf("Linha %d: identificador esperado ou mal formado\n", lexical.getLineNumber());
+//                erro("dc_v -> ident");
                 return false;
             }
         }
-        if(symbol != null && symbol.getId() == "sym_colon"){
+        if(symbol != null && symbol.getId().equals("sym_colon")){
             symbol = lexical.nextSymbol();
         }
         else {
-            erro("dc_v -> sym_colon");
+            System.out.printf("Linha %d: \":\" esperado\n", lexical.getLineNumber());
+//            erro("dc_v -> sym_colon");
             return false;
         }
-        if(symbol != null && (symbol.getId() == "sym_real" || symbol.getId() == "sym_int")){
+        if(symbol != null && (symbol.getId().equals("sym_real") || symbol.getId().equals("sym_int"))){
             symbol = lexical.nextSymbol();
         }
         else {
-            erro("dc_v -> sym_real ou sym_int");
+            System.out.printf("Linha %d: inteiro ou real esperado\n", lexical.getLineNumber());
+//            erro("dc_v -> sym_real ou sym_int");
             return false;
         }
-        if(symbol != null && symbol.getId() == "sym_semicolon"){
+        if(symbol != null && symbol.getId().equals("sym_semicolon")){
             lexical.nextSymbol();
         }
         else {
-            erro("dc_v -> sym_semicolon");
+            System.out.printf("Linha %d: \";\" esperado\n", lexical.getLineNumber());
+//            erro("dc_v -> sym_semicolon");
             return false;
         }
         return true;
@@ -187,22 +221,23 @@ public class SyntacticalAnalyzer {
 
     private boolean dc_p(){
         Token symbol = lexical.currentSymbol();
-        if(symbol == null || symbol.getId() != "sym_procedure"){
+        if(symbol == null || !symbol.getId().equals("sym_procedure")){
             return true;
         }
         symbol = lexical.nextSymbol();
-        if(symbol != null && symbol.getId() == "ident" && symbol.isValid()){
+        if(symbol != null && symbol.getId().equals("ident") && symbol.isValid()){
             symbol = lexical.nextSymbol();
         }
         else {
-            erro("dc_p -> ident");
+            System.out.printf("Linha %d: identificador esperado ou mal formado\n", lexical.getLineNumber());
+//            erro("dc_p -> ident");
             return false;
         }
         if(symbol != null && symbol.getId().equals("sym_leftParenthesis")){
             lexical.nextSymbol();
             boolean wasExecuted = lista_par();
             if(!wasExecuted){
-                erro("lista_par()");
+//                erro("lista_par()");
                 return false;
             }
             symbol = lexical.currentSymbol();
@@ -210,7 +245,8 @@ public class SyntacticalAnalyzer {
                 symbol = lexical.nextSymbol();
             }
             else {
-                erro("dc_p -> sym_rightParenthesis");
+                System.out.printf("Linha %d: \")\" esperado\n", lexical.getLineNumber());
+//                erro("dc_p -> sym_rightParenthesis");
                 return false;
             }
         }
@@ -218,13 +254,14 @@ public class SyntacticalAnalyzer {
             lexical.nextSymbol();
             boolean wasExecuted = corpo_p();
             if(!wasExecuted){
-                erro("dc_p -> corpo_p()");
+//                erro("dc_p -> corpo_p()");
                 return false;
             }
             dc_p();
         }
         else {
-            erro("dc_p -> sym_semicolon");
+            System.out.printf("Linha %d: \";\" esperado\n", lexical.getLineNumber());
+//            erro("dc_p -> sym_semicolon");
             return false;
         }
         return true;
@@ -233,7 +270,7 @@ public class SyntacticalAnalyzer {
     private boolean lista_par(){
         boolean wasExecuted = variaveis();
         if(!wasExecuted){
-            erro("lista_par -> variaveis()");
+//            erro("lista_par -> variaveis()");
             return false;
         }
         Token symbol = lexical.currentSymbol();
@@ -241,9 +278,13 @@ public class SyntacticalAnalyzer {
             lexical.nextSymbol();
             wasExecuted = tipo_var();
             if(!wasExecuted){
-                erro("lista_par -> tipo_var()");
+//                erro("lista_par -> tipo_var()");
                 return false;
             }
+        }
+        else {
+            System.out.printf("Linha %d: \":\" esperado\n", lexical.getLineNumber());
+            //erro()
         }
         symbol = lexical.currentSymbol();
         if(symbol != null && symbol.getId().equals("sym_semicolon")){
@@ -258,7 +299,8 @@ public class SyntacticalAnalyzer {
         if(symbol != null && symbol.getId().equals("ident")){
             symbol = lexical.nextSymbol();
         }else {
-            erro("variaveis() -> ident");
+            System.out.printf("Linha %d: identificador esperado ou mal formado\n", lexical.getLineNumber());
+//            erro("variaveis() -> ident");
             return false;
         }
         if(symbol != null && symbol.getId().equals("sym_comma")){
@@ -274,39 +316,45 @@ public class SyntacticalAnalyzer {
             lexical.nextSymbol();
             return true;
         }
+        else {
+            System.out.printf("Linha %d: inteiro ou real esperado\n", lexical.getLineNumber());
+//            erro()
+        }
         return false;
     }
 
     private boolean corpo_p(){
         boolean wasExecuted = dc_v();
         if(!wasExecuted){
-            erro("corpo_p -> dc_v()");
+//            erro("corpo_p -> dc_v()");
             return false;
         }
         Token symbol = lexical.currentSymbol();
         if(symbol != null && symbol.getId().equals("sym_begin")){
             lexical.nextSymbol();
         }else {
-            erro("corpo_p -> sym_begin");
+            System.out.printf("Linha %d: \"begin\" esperado\n", lexical.getLineNumber());
+//            erro("corpo_p -> sym_begin");
             return false;
         }
         wasExecuted = comandos();
         if(!wasExecuted){
-            erro("corpo_p -> comandos()");
+//            erro("corpo_p -> comandos()");
             return false;
         }
         symbol = lexical.currentSymbol();
-        //System.out.println(lexical.getLineNumber() + " | " + symbol.getId());
         if(symbol != null && symbol.getId().equals("sym_end")){
             symbol = lexical.nextSymbol();
         }else {
-            erro("corpo_p -> sym_end");
+            System.out.printf("Linha %d: \"end\" esperado\n", lexical.getLineNumber());
+//            erro("corpo_p -> sym_end");
             return false;
         }
         if(symbol != null && symbol.getId().equals("sym_semicolon")){
-            symbol = lexical.nextSymbol();
+            lexical.nextSymbol();
         }else {
-            erro("corpo_p -> sym_semicolon");
+            System.out.printf("Linha %d: \";\" esperado\n", lexical.getLineNumber());
+//            erro("corpo_p -> sym_semicolon");
             return false;
         }
         return true;
@@ -319,7 +367,7 @@ public class SyntacticalAnalyzer {
                 symbol.getId().equals("sym_begin"))) {
             boolean wasExecuted = cmd();
             if (!wasExecuted) {
-                erro("comandos -> cmd()");
+//                erro("comandos -> cmd()");
                 return false;
             }
             symbol = lexical.currentSymbol();
@@ -327,7 +375,8 @@ public class SyntacticalAnalyzer {
                 lexical.nextSymbol();
                 comandos();
             } else {
-                erro("comandos() -> sym_semicolon");
+                System.out.printf("Linha %d: \";\" esperado\n", lexical.getLineNumber());
+//                erro("comandos() -> sym_semicolon");
                 return false;
             }
         }
@@ -337,32 +386,32 @@ public class SyntacticalAnalyzer {
     private boolean cmd(){
         boolean wasExecuted = cmd_read();
         if(!wasExecuted){
-            erro("cmd -> cmd_read()");
+//            erro("cmd -> cmd_read()");
             return false;
         }
         wasExecuted = cmd_write();
         if(!wasExecuted){
-            erro("cmd -> cmd_write()");
+//            erro("cmd -> cmd_write()");
             return false;
         }
         wasExecuted = cmd_while();
         if(!wasExecuted){
-            erro("cmd -> cmd_while()");
+//            erro("cmd -> cmd_while()");
             return false;
         }
         wasExecuted = cmd_if();
         if(!wasExecuted){
-            erro("cmd -> cmd_if()");
+//            erro("cmd -> cmd_if()");
             return false;
         }
         wasExecuted = cmd_ident();
         if(!wasExecuted){
-            erro("cmd -> cmd_if()");
+//            erro("cmd -> cmd_if()");
             return false;
         }
         wasExecuted = cmd_begin();
         if(!wasExecuted){
-            erro("cmd -> cmd_begin()");
+//            erro("cmd -> cmd_begin()");
             return false;
         }
         return true;
@@ -376,7 +425,7 @@ public class SyntacticalAnalyzer {
                 lexical.nextSymbol();
                 boolean wasExecuted = variaveis();
                 if(!wasExecuted){
-                    erro("cmd_read -> variaveis()");
+//                    erro("cmd_read -> variaveis()");
                     return false;
                 }
                 symbol = lexical.currentSymbol();
@@ -384,11 +433,13 @@ public class SyntacticalAnalyzer {
                     lexical.nextSymbol();
                     return true;
                 } else {
-                    erro("cmd_read -> sym_rightParenthesis");
+                    System.out.printf("Linha %d: \")\" esperado\n", lexical.getLineNumber());
+//                    erro("cmd_read -> sym_rightParenthesis");
                     return false;
                 }
             }else{
-                erro("cmd_read -> sym_leftParenthesis");
+                System.out.printf("Linha %d: \"(\" esperado\n", lexical.getLineNumber());
+//                erro("cmd_read -> sym_leftParenthesis");
                 return false;
             }
         }
@@ -403,7 +454,7 @@ public class SyntacticalAnalyzer {
                 lexical.nextSymbol();
                 boolean wasExecuted = variaveis();
                 if(!wasExecuted){
-                    erro("cmd_write -> variaveis()");
+//                    erro("cmd_write -> variaveis()");
                     return false;
                 }
                 symbol = lexical.currentSymbol();
@@ -411,11 +462,13 @@ public class SyntacticalAnalyzer {
                     lexical.nextSymbol();
                     return true;
                 } else {
-                    erro("cmd_write -> sym_rightParenthesis");
+                    System.out.printf("Linha %d: \")\" esperado\n", lexical.getLineNumber());
+//                    erro("cmd_write -> sym_rightParenthesis");
                     return false;
                 }
             }else{
-                erro("cmd_write -> sym_leftParenthesis");
+                System.out.printf("Linha %d: \"(\" esperado\n", lexical.getLineNumber());
+//                erro("cmd_write -> sym_leftParenthesis");
                 return false;
             }
         }
@@ -430,18 +483,20 @@ public class SyntacticalAnalyzer {
                 lexical.nextSymbol();
                 boolean wasExecuted = condicao();
                 if(!wasExecuted){
-                    erro("cmd_while -> condicao()");
+//                    erro("cmd_while -> condicao()");
                     return false;
                 }
                 symbol = lexical.currentSymbol();
                 if(symbol != null && symbol.getId().equals("sym_rightParenthesis")) {
                     lexical.nextSymbol();
                 } else {
-                    erro("cmd_while -> sym_rightParenthesis");
+                    System.out.printf("Linha %d: \")\" esperado\n", lexical.getLineNumber());
+//                    erro("cmd_while -> sym_rightParenthesis");
                     return false;
                 }
             }else {
-                erro("cmd_while -> sym_leftParenthesis");
+                System.out.printf("Linha %d: \"(\" esperado\n", lexical.getLineNumber());
+//                erro("cmd_while -> sym_leftParenthesis");
                 return false;
             }
             symbol = lexical.currentSymbol();
@@ -450,7 +505,8 @@ public class SyntacticalAnalyzer {
                 cmd();
             }
             else {
-                erro("cmd_while -> sym_do");
+                System.out.printf("Linha %d: \"(\" esperado\n", lexical.getLineNumber());
+//                erro("cmd_while -> sym_do");
                 return false;
             }
         }
@@ -463,14 +519,15 @@ public class SyntacticalAnalyzer {
             lexical.nextSymbol();
             boolean wasExecuted = condicao();
             if(!wasExecuted){
-                erro("cmd_if -> condicao()");
+//                erro("cmd_if -> condicao()");
                 return false;
             }
             symbol = lexical.currentSymbol();
             if(symbol != null && symbol.getId().equals("sym_then")) {
                 lexical.nextSymbol();
             }else {
-                erro("cmd_if -> sym_then");
+                System.out.printf("Linha %d: \"then\" esperado\n", lexical.getLineNumber());
+//                erro("cmd_if -> sym_then");
                 return false;
             }
             cmd();
@@ -491,7 +548,7 @@ public class SyntacticalAnalyzer {
                 lexical.nextSymbol();
                 boolean wasExecuted = expressao();
                 if(!wasExecuted){
-                    erro("cmd() -> expressao()");
+//                    erro("cmd() -> expressao()");
                     return false;
                 }
                 return true;
@@ -503,6 +560,10 @@ public class SyntacticalAnalyzer {
                 if(symbol != null && symbol.getId().equals("sym_rightParenthesis")){
                     lexical.nextSymbol();
                     return true;
+                }
+                else{
+                    System.out.printf("Linha %d: \")\" esperado\n", lexical.getLineNumber());
+                    return false;
                 }
             }else {
                 return true;
@@ -517,7 +578,7 @@ public class SyntacticalAnalyzer {
             lexical.nextSymbol();
             boolean wasExecuted = comandos();
             if(!wasExecuted){
-                erro("cmd_begin -> comandos()");
+//                erro("cmd_begin -> comandos()");
                 return false;
             }
             symbol = lexical.currentSymbol();
@@ -525,7 +586,8 @@ public class SyntacticalAnalyzer {
                 lexical.nextSymbol();
                 return true;
             } else{
-                erro("cmd_begin -> sym_end");
+                System.out.printf("Linha %d: \"end\" esperado\n", lexical.getLineNumber());
+//                erro("cmd_begin -> sym_end");
                 return false;
             }
         }
@@ -537,7 +599,8 @@ public class SyntacticalAnalyzer {
         if(symbol != null && symbol.getId().equals("ident")){
             symbol = lexical.nextSymbol();
         } else {
-            erro("argumentos() -> ident");
+            System.out.printf("Linha %d: identificador esperado ou mal formado\n", lexical.getLineNumber());
+//            erro("argumentos() -> ident");
             return false;
         }
         if(symbol != null && symbol.equals("sym_semicolon")){
@@ -550,7 +613,7 @@ public class SyntacticalAnalyzer {
     private boolean condicao(){
         boolean wasExecuted = expressao();
         if(!wasExecuted){
-            erro("condicao -> expressao()");
+//            erro("condicao -> expressao()");
             return false;
         }
         Token symbol = lexical.currentSymbol();
@@ -559,12 +622,13 @@ public class SyntacticalAnalyzer {
                 symbol.getId().equals("sym_greater") || symbol.getId().equals("sym_less"))){
             lexical.nextSymbol();
         } else{
-            erro("condicao -> relacao");
+            System.out.printf("Linha %d: relação esperada\n", lexical.getLineNumber());
+//            erro("condicao -> relacao");
             return false;
         }
         wasExecuted = expressao();
         if(!wasExecuted){
-            erro("condicao -> expressao()");
+//            erro("condicao -> expressao()");
             return false;
         }
         return true;
@@ -573,12 +637,12 @@ public class SyntacticalAnalyzer {
     private boolean expressao(){
         boolean wasExecuted = termo();
         if(!wasExecuted){
-            erro("expressao -> termo()");
+//            erro("expressao -> termo()");
             return false;
         }
         wasExecuted = outros_termos();
         if(!wasExecuted){
-            erro("expressao -> outros_termos()");
+//            erro("expressao -> outros_termos()");
             return false;
         }
         return true;
@@ -593,7 +657,7 @@ public class SyntacticalAnalyzer {
         }
         boolean wasExecuted = termo();
         if(!wasExecuted){
-            erro("outros_termos -> termo()");
+//            erro("outros_termos -> termo()");
             return false;
         }
         outros_termos();
@@ -607,12 +671,12 @@ public class SyntacticalAnalyzer {
         }
         boolean wasExecuted = fator();
         if(!wasExecuted){
-            erro("termo -> fator()");
+//            erro("termo -> fator()");
             return false;
         }
         wasExecuted = mais_fatores();
         if(!wasExecuted){
-            erro("termo -> mais_fatores()");
+//            erro("termo -> mais_fatores()");
             return false;
         }
         return true;
@@ -631,17 +695,19 @@ public class SyntacticalAnalyzer {
         if(symbol != null && symbol.getId().equals("sym_leftParenthesis")){
             lexical.nextSymbol();
         } else {
-            erro("fator -> sym_leftParenthesis");
+            System.out.printf("Linha %d: \"(\" esperado\n", lexical.getLineNumber());
+//            erro("fator -> sym_leftParenthesis");
         }
         boolean wasExecuted = expressao();
         if(!wasExecuted){
-            erro("fator -> expressao()");
+//            erro("fator -> expressao()");
             return false;
         }
         if(symbol != null && symbol.getId().equals("sym_rightParenthesis")){
             lexical.nextSymbol();
         } else {
-            erro("fator -> sym_rightParenthesis");
+            System.out.printf("Linha %d: \")\" esperado\n", lexical.getLineNumber());
+//            erro("fator -> sym_rightParenthesis");
             return false;
         }
         return true;
@@ -657,7 +723,7 @@ public class SyntacticalAnalyzer {
         }
         boolean wasExecuted = fator();
         if(!wasExecuted){
-            erro("mais_fatores -> fator()");
+//            erro("mais_fatores -> fator()");
             return false;
         }
         mais_fatores();
@@ -670,29 +736,31 @@ public class SyntacticalAnalyzer {
             lexical.nextSymbol();
         }
         else {
+            System.out.printf("Linha %d: identificador esperado ou mal formado\n", lexical.getLineNumber());
             erro("func_for -> ident");
             return false;
         }
         boolean wasExecuted = expressao();
         if(!wasExecuted){
-            erro("func_for -> expressao()");
+//            erro("func_for -> expressao()");
             return false;
         }
         symbol = lexical.currentSymbol();
         if(symbol != null && symbol.getId().equals("sym_to")){
             lexical.nextSymbol();
         } else {
-            erro("func_for -> sym_to");
+            System.out.printf("Linha %d: \"to\" esperado\n", lexical.getLineNumber());
+//            erro("func_for -> sym_to");
             return false;
         }
         wasExecuted = expressao();
         if(!wasExecuted){
-            erro("func_for -> expressao()");
+//            erro("func_for -> expressao()");
             return false;
         }
         wasExecuted = comandos();
         if(!wasExecuted){
-            erro("func_for -> comandos()");
+//            erro("func_for -> comandos()");
             return false;
         }
         return true;
