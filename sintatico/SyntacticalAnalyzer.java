@@ -1,6 +1,7 @@
 public class SyntacticalAnalyzer {
 
     LexicalAnalyzer lexical;
+    boolean compiled;
     public enum PanicLevel {
         Local,
         Father,
@@ -9,6 +10,7 @@ public class SyntacticalAnalyzer {
 
     public SyntacticalAnalyzer(LexicalAnalyzer lexical){
         this.lexical = lexical;
+        this.compiled = true;
     }
 
     public boolean execute(){
@@ -77,6 +79,7 @@ public class SyntacticalAnalyzer {
             System.out.printf("Linha %d: \"program\" esperado\n", lexical.getLineNumber());
             // Seguidor(program) = ident | Seguidor(programa) = lambda
             PanicLevel err = panic(new String[] {"ident"}, new String[]{""});
+            compiled = false;
             if(err == PanicLevel.Father) {
                 return false;
             }
@@ -88,6 +91,7 @@ public class SyntacticalAnalyzer {
         }
         else {
             System.out.printf("Linha %d: identificador esperado ou mal formado\n", lexical.getLineNumber());
+            compiled = false;
             // Seguidor(ident) = ; | Seguidor(programa) = lambda
             PanicLevel err = panic(new String[] {"sym_semicolon"}, new String[] {""});
             if(err == PanicLevel.Father) {
@@ -101,6 +105,7 @@ public class SyntacticalAnalyzer {
         }
         else {
             System.out.printf("Linha %d: \";\" esperado\n", lexical.getLineNumber());
+            compiled = false;
             // Primeiro(dc) = const,var,procedure | Seguidor(programa) = lambda
             PanicLevel err = panic(new String[] {"sym_const", "sym_var", "sym_procedure"}, new String[] {""});
             if(err == PanicLevel.Father) {
@@ -118,6 +123,7 @@ public class SyntacticalAnalyzer {
             lexical.nextSymbol();
         }
         else {
+            compiled = false;
             System.out.printf("Linha %d: \"begin\" esperado\n", lexical.getLineNumber());
             // Primeiro(comandos) = read, write, while, if, ident, begin | Seguidor(programa) = lambda
             err = panic(new String[] {"sym_read", "sym_write", "sym_while", "sym_if", "ident", "sym_begin", "sym_for"},
@@ -134,6 +140,7 @@ public class SyntacticalAnalyzer {
             symbol = lexical.nextSymbol();
         }
         else {
+            compiled = false;
             System.out.printf("Linha %d: \"end\" esperado\n", lexical.getLineNumber());
             // Seguidor(end) = . | Seguidor(programa) = lambda
             err = panic(new String[] {"sym_dot"}, new String[] {""});
@@ -143,13 +150,14 @@ public class SyntacticalAnalyzer {
         }
         // Espera o token "ponto" para finalizar a compilação
         if(symbol == null || !symbol.getId().equals("sym_dot")){
+            compiled = false;
             System.out.printf("Linha %d: \".\" esperado\n", lexical.getLineNumber());
             err = panic(new String[] {""}, new String[] {""});
             if(err == PanicLevel.Father) {
                 return false;
             }
         }
-    return true;
+    return compiled;
     }
 
     private PanicLevel dc(String []local, String []father){
@@ -192,6 +200,7 @@ public class SyntacticalAnalyzer {
             symbol = lexical.nextSymbol();
         }
         else {
+            compiled = false;
             System.out.printf("Linha %d: identificador esperado ou mal formado\n", lexical.getLineNumber());
             PanicLevel err = panic(new String[] {"sym_eq"}, newFather);
             if(err == PanicLevel.Father) {
@@ -207,6 +216,7 @@ public class SyntacticalAnalyzer {
             symbol = lexical.nextSymbol();
         }
         else {
+            compiled = false;
             System.out.printf("Linha %d: \"=\" esperado\n", lexical.getLineNumber());
             PanicLevel err = panic(new String[] {"number"}, newFather);
             if(err == PanicLevel.Father) {
@@ -222,6 +232,7 @@ public class SyntacticalAnalyzer {
             symbol = lexical.nextSymbol();
         }
         else {
+            compiled = false;
             System.out.printf("Linha %d: inteiro ou real esperado\n", lexical.getLineNumber());
             PanicLevel err = panic(new String[] {"sym_semicolon"}, newFather);
             if(err == PanicLevel.Father) {
@@ -238,6 +249,7 @@ public class SyntacticalAnalyzer {
             dc_c(local,father);
         }
         else {
+            compiled = false;
             System.out.printf("Linha %d: \";\" esperado\n", lexical.getLineNumber());
             PanicLevel err = panic(null, newFather);
             if(err == PanicLevel.Father) {
@@ -262,6 +274,7 @@ public class SyntacticalAnalyzer {
             symbol = lexical.nextSymbol();
         }
         else {
+            compiled = false;
             System.out.printf("Linha %d: identificador esperado ou mal formado\n", lexical.getLineNumber());
             PanicLevel err = panic(new String[] {"sym_colon"}, newFather);
             if(err == PanicLevel.Father) {
@@ -277,6 +290,7 @@ public class SyntacticalAnalyzer {
             if (symbol != null && symbol.getId().equals("ident") && symbol.isValid()) {
                 symbol = lexical.nextSymbol();
             } else {
+                compiled = false;
                 System.out.printf("Linha %d: identificador esperado ou mal formado\n", lexical.getLineNumber());
                 PanicLevel err = panic(new String[] {"sym_colon"}, newFather);
                 if(err == PanicLevel.Father) {
@@ -293,6 +307,7 @@ public class SyntacticalAnalyzer {
             symbol = lexical.nextSymbol();
         }
         else {
+            compiled = false;
             System.out.printf("Linha %d: \":\" esperado\n", lexical.getLineNumber());
             PanicLevel err = panic(new String[] {"sym_real", "sym_int"}, newFather);
             if(err == PanicLevel.Father) {
@@ -307,6 +322,7 @@ public class SyntacticalAnalyzer {
             symbol = lexical.nextSymbol();
         }
         else {
+            compiled = false;
             System.out.printf("Linha %d: inteiro ou real esperado\n", lexical.getLineNumber());
             PanicLevel err = panic(new String[] {"sym_semicolon"}, newFather);
             if(err == PanicLevel.Father) {
@@ -322,6 +338,7 @@ public class SyntacticalAnalyzer {
             lexical.nextSymbol();
         }
         else {
+            compiled = false;
             System.out.printf("Linha %d: \";\" esperado\n", lexical.getLineNumber());
             PanicLevel err = panic(null, newFather);
             if(err == PanicLevel.Father) {
@@ -346,6 +363,7 @@ public class SyntacticalAnalyzer {
             symbol = lexical.nextSymbol();
         }
         else {
+            compiled = false;
             System.out.printf("Linha %d: identificador esperado ou mal formado\n", lexical.getLineNumber());
             PanicLevel err = panic(new String[] {"sym_leftParenthesis", "sym_semicolon"}, newFather);
             if(err == PanicLevel.Father) {
@@ -372,6 +390,7 @@ public class SyntacticalAnalyzer {
                 symbol = lexical.nextSymbol();
             }
             else {
+                compiled = false;
                 System.out.printf("Linha %d: \")\" esperado\n", lexical.getLineNumber());
                 err = panic(new String[] {"sym_semicolon"}, newFather);
                 if(err == PanicLevel.Father) {
@@ -397,6 +416,7 @@ public class SyntacticalAnalyzer {
             dc_p(local, father);
         }
         else {
+            compiled = false;
             System.out.printf("Linha %d: \";\" esperado\n", lexical.getLineNumber());
             PanicLevel err = lista_par(new String[] {"sym_var", "sym_begin"}, newFather);
             if(err == PanicLevel.Father) {
@@ -433,6 +453,7 @@ public class SyntacticalAnalyzer {
             }
         }
         else {
+            compiled = false;
             System.out.printf("Linha %d: \":\" esperado\n", lexical.getLineNumber());
             err = panic(new String[] {"sym_real", "sym_int"}, newFather);
             if(err == PanicLevel.Father) {
@@ -464,6 +485,7 @@ public class SyntacticalAnalyzer {
         if(symbol != null && symbol.getId().equals("ident")){
             symbol = lexical.nextSymbol();
         }else {
+            compiled = false;
             System.out.printf("Linha %d: identificador esperado ou mal formado\n", lexical.getLineNumber());
             PanicLevel err = panic(new String[] {"sym_comma", "sym_colon", "sym_rightParenthesis"}, newFather);
             if(err == PanicLevel.Father) {
@@ -495,6 +517,7 @@ public class SyntacticalAnalyzer {
             lexical.nextSymbol();
         }
         else {
+            compiled = false;
             System.out.printf("Linha %d: inteiro ou real esperado\n", lexical.getLineNumber());
             PanicLevel err = panic(null, newFather);
             if(err == PanicLevel.Father) {
@@ -522,6 +545,7 @@ public class SyntacticalAnalyzer {
         if(symbol != null && symbol.getId().equals("sym_begin")){
             lexical.nextSymbol();
         }else {
+            compiled = false;
             System.out.printf("Linha %d: \"begin\" esperado\n", lexical.getLineNumber());
             err = panic(new String[] {"sym_read", "sym_write", "sym_while", "sym_if", "ident", "sym_begin", "sym_for"}, newFather);
             if(err == PanicLevel.Father) {
@@ -544,6 +568,7 @@ public class SyntacticalAnalyzer {
         if(symbol != null && symbol.getId().equals("sym_end")){
             symbol = lexical.nextSymbol();
         }else {
+            compiled = false;
             System.out.printf("Linha %d: \"end\" esperado\n", lexical.getLineNumber());
             err = panic(new String[] {"sym_semicolon"}, newFather);
             if(err == PanicLevel.Father) {
@@ -558,6 +583,7 @@ public class SyntacticalAnalyzer {
         if(symbol != null && symbol.getId().equals("sym_semicolon")){
             lexical.nextSymbol();
         }else {
+            compiled = false;
             System.out.printf("Linha %d: \";\" esperado\n", lexical.getLineNumber());
             err = panic(null, newFather);
             if(err == PanicLevel.Father) {
@@ -597,6 +623,7 @@ public class SyntacticalAnalyzer {
                     return PanicLevel.Local;
                 }
             } else {
+                compiled = false;
                 System.out.printf("Linha %d: \";\" esperado\n", lexical.getLineNumber());
                 err = panic(null, newFather);
                 if(err == PanicLevel.Father) {
@@ -703,6 +730,7 @@ public class SyntacticalAnalyzer {
                     }
                 }
             }else{
+                compiled = false;
                 System.out.printf("Linha %d: \"(\" esperado\n", lexical.getLineNumber());
                 PanicLevel err = panic(new String[] {"ident"}, newFather);
                 if(err == PanicLevel.Father) {
@@ -736,6 +764,7 @@ public class SyntacticalAnalyzer {
                 if(symbol != null && symbol.getId().equals("sym_rightParenthesis")) {
                     lexical.nextSymbol();
                 } else {
+                    compiled = false;
                     System.out.printf("Linha %d: \")\" esperado\n", lexical.getLineNumber());
                     err = panic(null, newFather);
                     if(err == PanicLevel.Father) {
@@ -747,6 +776,7 @@ public class SyntacticalAnalyzer {
                     }
                 }
             }else{
+                compiled = false;
                 System.out.printf("Linha %d: \"(\" esperado\n", lexical.getLineNumber());
                 PanicLevel err = panic(new String[] {"ident"}, newFather);
                 if(err == PanicLevel.Father) {
@@ -791,6 +821,7 @@ public class SyntacticalAnalyzer {
                     }
                 }
             }else {
+                compiled = false;
                 System.out.printf("Linha %d: \"(\" esperado\n", lexical.getLineNumber());
                 PanicLevel err = panic(new String[] {"sym_minus", "sym_plus", "ident", "number", "sym_leftParenthesis"}, newFather);
                 if(err == PanicLevel.Father) {
@@ -814,6 +845,7 @@ public class SyntacticalAnalyzer {
                 }
             }
             else {
+                compiled = false;
                 System.out.printf("Linha %d: \"do\" esperado\n", lexical.getLineNumber());
                 PanicLevel err = panic(new String[] {"sym_read", "sym_write", "sym_while", "sym_if", "ident", "sym_begin", "sym_for"}, newFather);
                 if(err == PanicLevel.Father) {
@@ -845,6 +877,7 @@ public class SyntacticalAnalyzer {
             if(symbol != null && symbol.getId().equals("sym_then")) {
                 lexical.nextSymbol();
             }else {
+                compiled = false;
                 System.out.printf("Linha %d: \"then\" esperado\n", lexical.getLineNumber());
                 err = panic(new String[] {"sym_read", "sym_write", "sym_while", "sym_if", "ident", "sym_begin", "sym_for"}, newFather);
                 if(err == PanicLevel.Father) {
@@ -913,6 +946,7 @@ public class SyntacticalAnalyzer {
                     lexical.nextSymbol();
                 }
                 else{
+                    compiled = false;
                     System.out.printf("Linha %d: \")\" esperado\n", lexical.getLineNumber());
                     err = panic(null, newFather);
                     if(err == PanicLevel.Father) {
@@ -927,6 +961,7 @@ public class SyntacticalAnalyzer {
                 return PanicLevel.None;
             }
         } else if(symbol != null && symbol.getId().equals("ident") && !symbol.isValid()){
+            compiled = false;
             System.out.printf("Linha %d: identificador esperado ou mal formado\n", lexical.getLineNumber());
             PanicLevel err = panic(new String[] {"sym_plus", "sym_minus", "numero", "sym_leftParenthesis"}, newFather);
             if(err == PanicLevel.Father) {
@@ -957,6 +992,7 @@ public class SyntacticalAnalyzer {
             if(symbol != null && symbol.getId().equals("sym_end")){
                 lexical.nextSymbol();
             } else{
+                compiled = false;
                 System.out.printf("Linha %d: \"end\" esperado\n", lexical.getLineNumber());
                 err = panic(null, newFather);
                 if(err == PanicLevel.Father) {
@@ -977,6 +1013,7 @@ public class SyntacticalAnalyzer {
         if(symbol != null && symbol.getId().equals("ident")){
             symbol = lexical.nextSymbol();
         } else {
+            compiled = false;
             System.out.printf("Linha %d: identificador esperado ou mal formado\n", lexical.getLineNumber());
             PanicLevel err = panic(new String[] {"sym_semicolon", "sym_rightParenthesis"}, newFather);
             if(err == PanicLevel.Father) {
@@ -1019,6 +1056,7 @@ public class SyntacticalAnalyzer {
                 symbol.getId().equals("sym_greater") || symbol.getId().equals("sym_less"))){
             lexical.nextSymbol();
         } else{
+            compiled = false;
             System.out.printf("Linha %d: relação esperada\n", lexical.getLineNumber());
             err = panic(new String[] {"sym_plus", "sym_minus", "ident", "number", "sym_leftParenthesis"}, newFather);
             if(err == PanicLevel.Father) {
@@ -1120,6 +1158,7 @@ public class SyntacticalAnalyzer {
             lexical.nextSymbol();
             return PanicLevel.None;
         }else if(symbol != null && symbol.getId().equals("ident") && !symbol.isValid()){
+            compiled = false;
             System.out.printf("Linha %d: identificador esperado ou mal formado\n", lexical.getLineNumber());
             PanicLevel err = panic(new String[] {"sym_mult", "sym_div"}, newFather);
             if(err == PanicLevel.Father) {
@@ -1138,6 +1177,7 @@ public class SyntacticalAnalyzer {
         if(symbol != null && symbol.getId().equals("sym_leftParenthesis")){
             lexical.nextSymbol();
         } else {
+            compiled = false;
             System.out.printf("Linha %d: \"(\" esperado\n", lexical.getLineNumber());
             PanicLevel err = panic(new String[] {"sym_plus", "sym_minus", "ident", "number", "sym_leftParenthesis"}, newFather);
             if(err == PanicLevel.Father) {
@@ -1160,6 +1200,7 @@ public class SyntacticalAnalyzer {
         if(symbol != null && symbol.getId().equals("sym_rightParenthesis")){
             lexical.nextSymbol();
         } else {
+            compiled = false;
             System.out.printf("Linha %d: \")\" esperado\n", lexical.getLineNumber());
             err = panic(null, newFather);
             if(err == PanicLevel.Father) {
@@ -1209,6 +1250,7 @@ public class SyntacticalAnalyzer {
             if (symbol != null && symbol.getId().equals("ident") && symbol.isValid()) {
                 lexical.nextSymbol();
             } else {
+                compiled = false;
                 System.out.printf("Linha %d: identificador esperado ou mal formado\n", lexical.getLineNumber());
                 PanicLevel err = panic(new String[] {"sym_atrib"}, newFather);
                 if(err == PanicLevel.Father) {
@@ -1223,6 +1265,7 @@ public class SyntacticalAnalyzer {
             if (symbol != null && symbol.getId().equals("sym_atrib") && symbol.isValid()) {
                 lexical.nextSymbol();
             } else {
+                compiled = false;
                 System.out.printf("Linha %d: atribuição esperada\n", lexical.getLineNumber());
                 PanicLevel err = panic(new String[] {"sym_plus", "sym_minus", "ident", "number", "sym_leftParenthesis"}, newFather);
                 if(err == PanicLevel.Father) {
@@ -1245,6 +1288,7 @@ public class SyntacticalAnalyzer {
             if (symbol != null && symbol.getId().equals("sym_to")) {
                 lexical.nextSymbol();
             } else {
+                compiled = false;
                 System.out.printf("Linha %d: \"to\" esperado\n", lexical.getLineNumber());
                 err = panic(new String[] {"sym_plus", "sym_minus", "ident", "number", "sym_leftParenthesis"}, newFather);
                 if(err == PanicLevel.Father) {
@@ -1267,6 +1311,7 @@ public class SyntacticalAnalyzer {
             if (symbol != null && symbol.getId().equals("sym_do") && symbol.isValid()) {
                 lexical.nextSymbol();
             } else {
+                compiled = false;
                 System.out.printf("Linha %d: \"do\" esperada\n", lexical.getLineNumber());
                 err = panic(new String[] {"sym_read", "sym_write", "sym_while", "sym_if", "ident", "sym_begin", "sym_for"}, newFather);
                 if(err == PanicLevel.Father) {
