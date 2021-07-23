@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--Created with JFLAP 7.1.--><structure>
+	<type>moore</type>
+	<automaton>
+		<!--The list of states.-->
+		<state id="0" name="q0">
+			<x>260.0</x>
+			<y>191.0</y>
+			<initial/>
+			<output/>
+		</state>
+		<state id="1" name="q1">
+			<x>419.0</x>
+			<y>246.0</y>
+			<output/>
+		</state>
+		<state id="2" name="q2">
+			<x>589.0</x>
+			<y>225.0</y>
+			<output/>
+		</state>
+		<state id="3" name="q3">
+			<x>581.0</x>
+			<y>117.0</y>
+			<output>return(numero_int, number)</output>
+		</state>
+		<state id="5" name="q5">
+			<x>704.0</x>
+			<y>224.0</y>
+			<output/>
+		</state>
+		<state id="6" name="q6">
+			<x>671.0</x>
+			<y>423.0</y>
+			<output>return(cadeia, invalid)</output>
+		</state>
+		<state id="7" name="q7">
+			<x>874.0</x>
+			<y>129.0</y>
+			<output>retur(numero_real, number)</output>
+		</state>
+		<state id="9" name="q4">
+			<x>510.0</x>
+			<y>358.0</y>
+			<output/>
+		</state>
+		<!--The list of transitions.-->
+		<transition>
+			<from>0</from>
+			<to>0</to>
+			<read>' ' </read>
+			<transout/>
+		</transition>
+		<transition>
+			<from>2</from>
+			<to>5</to>
+			<read>0..9</read>
+			<transout/>
+		</transition>
+		<transition>
+			<from>5</from>
+			<to>9</to>
+			<read>outro</read>
+			<transout/>
+		</transition>
+		<transition>
+			<from>1</from>
+			<to>2</to>
+			<read>.</read>
+			<transout/>
+		</transition>
+		<transition>
+			<from>5</from>
+			<to>7</to>
+			<read>white space</read>
+			<transout>retur(numero_real, number)</transout>
+		</transition>
+		<transition>
+			<from>9</from>
+			<to>6</to>
+			<read>: , ;</read>
+			<transout>return(cadeia, invalid)</transout>
+		</transition>
+		<transition>
+			<from>1</from>
+			<to>3</to>
+			<read>white space</read>
+			<transout>return(numero_int, number)</transout>
+		</transition>
+		<transition>
+			<from>9</from>
+			<to>6</to>
+			<read/>
+			<transout>return(cadeia, invalid)</transout>
+		</transition>
+		<transition>
+			<from>2</from>
+			<to>9</to>
+			<read>outro</read>
+			<transout/>
+		</transition>
+		<transition>
+			<from>1</from>
+			<to>3</to>
+			<read>: . ;</read>
+			<transout>return(numero_int, number)</transout>
+		</transition>
+		<transition>
+			<from>1</from>
+			<to>9</to>
+			<read>outro</read>
+			<transout/>
+		</transition>
+		<transition>
+			<from>5</from>
+			<to>7</to>
+			<read>: , ;</read>
+			<transout>retur(numero_real, number)</transout>
+		</transition>
+		<transition>
+			<from>5</from>
+			<to>7</to>
+			<read/>
+			<transout>retur(numero_real, number)</transout>
+		</transition>
+		<transition>
+			<from>9</from>
+			<to>9</to>
+			<read>outro</read>
+			<transout/>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>1</to>
+			<read>0..9</read>
+			<transout/>
+		</transition>
+		<transition>
+			<from>9</from>
+			<to>6</to>
+			<read>white space</read>
+			<transout>return(cadeia, invalid)</transout>
+		</transition>
+		<transition>
+			<from>1</from>
+			<to>3</to>
+			<read/>
+			<transout>return(numero_int, number)</transout>
+		</transition>
+		<transition>
+			<from>1</from>
+			<to>1</to>
+			<read>0..9</read>
+			<transout/>
+		</transition>
+		<transition>
+			<from>5</from>
+			<to>5</to>
+			<read>0..9</read>
+			<transout/>
+		</transition>
+	</automaton>
+</structure>
