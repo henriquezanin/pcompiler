@@ -55,7 +55,7 @@ public class LexicalAnalyzer {
                 if(!token.isValid()){
                     System.out.printf("Erro lexico na linha %d: Comentário não fechado\n", lineNumber);
                 }
-                this.nextSymbol();
+                return this.nextSymbol();
             } else if (token != null && token.getId() != null && token.getId().equals("number")){
                 this.currentToken = token;
                 return token;
@@ -64,7 +64,7 @@ public class LexicalAnalyzer {
                 return token;
             }
     }
-        return null;
+        return token;
     }
 
     public Token currentSymbol(){

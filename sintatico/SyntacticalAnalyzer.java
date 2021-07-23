@@ -82,6 +82,7 @@ public class SyntacticalAnalyzer {
             }
         }
         // Espera um identificador valido como proximo token
+        symbol = lexical.currentSymbol();
         if(symbol != null && symbol.getId().equals("ident") && symbol.isValid()){
             symbol = lexical.nextSymbol();
         }
@@ -93,7 +94,8 @@ public class SyntacticalAnalyzer {
                 return false;
             }
         }
-        // Espera um ";" como próximo token
+        //Espera um ";" como próximo token
+        symbol = lexical.currentSymbol();
         if(symbol != null && symbol.getId().equals("sym_semicolon")){
             lexical.nextSymbol();
         }
@@ -200,6 +202,7 @@ public class SyntacticalAnalyzer {
                 return PanicLevel.Local;
             }
         }
+        symbol = lexical.currentSymbol();
         if(symbol != null && symbol.getId().equals("sym_eq")){
             symbol = lexical.nextSymbol();
         }
@@ -214,6 +217,7 @@ public class SyntacticalAnalyzer {
                 return PanicLevel.Local;
             }
         }
+        symbol = lexical.currentSymbol();
         if(symbol != null && symbol.getId().equals("number")){
             symbol = lexical.nextSymbol();
         }
@@ -228,6 +232,7 @@ public class SyntacticalAnalyzer {
                 return PanicLevel.Local;
             }
         }
+        symbol = lexical.currentSymbol();
         if(symbol != null && symbol.getId().equals("sym_semicolon")){
             lexical.nextSymbol();
             dc_c(local,father);
@@ -283,6 +288,7 @@ public class SyntacticalAnalyzer {
                 }
             }
         }
+        symbol = lexical.currentSymbol();
         if(symbol != null && symbol.getId().equals("sym_colon")){
             symbol = lexical.nextSymbol();
         }
@@ -311,6 +317,7 @@ public class SyntacticalAnalyzer {
                 return PanicLevel.Local;
             }
         }
+        symbol = lexical.currentSymbol();
         if(symbol != null && symbol.getId().equals("sym_semicolon")){
             lexical.nextSymbol();
         }
@@ -349,6 +356,7 @@ public class SyntacticalAnalyzer {
                 return PanicLevel.Local;
             }
         }
+        symbol = lexical.currentSymbol();
         if(symbol != null && symbol.getId().equals("sym_leftParenthesis")){
             lexical.nextSymbol();
             PanicLevel err = lista_par(new String[] {"sym_rightParenthesis"}, newFather);
@@ -375,6 +383,7 @@ public class SyntacticalAnalyzer {
                 }
             }
         }
+        symbol = lexical.currentSymbol();
         if(symbol != null && symbol.getId().equals("sym_semicolon")){
             lexical.nextSymbol();
             PanicLevel err = corpo_p(new String[] {"sym_procedure"}, newFather);
@@ -545,6 +554,7 @@ public class SyntacticalAnalyzer {
                 return PanicLevel.Local;
             }
         }
+        symbol = lexical.currentSymbol();
         if(symbol != null && symbol.getId().equals("sym_semicolon")){
             lexical.nextSymbol();
         }else {
@@ -887,6 +897,7 @@ public class SyntacticalAnalyzer {
                 return PanicLevel.None;
             }
             //TODO se o identificador não for válido entrar no modo panico
+            symbol = lexical.currentSymbol();
             if(symbol != null && symbol.getId().equals("sym_leftParenthesis")){
                 lexical.nextSymbol();
                 PanicLevel err = argumentos(new String[] {"sym_rightParenthesis"}, newFather);
@@ -976,6 +987,7 @@ public class SyntacticalAnalyzer {
                 return PanicLevel.Local;
             }
         }
+        symbol = lexical.currentSymbol();
         if(symbol != null && symbol.getId().equals("sym_semicolon")){
             lexical.nextSymbol();
             PanicLevel err = argumentos(local, father);
@@ -1118,6 +1130,7 @@ public class SyntacticalAnalyzer {
                 return PanicLevel.Local;
             }
         }
+        symbol = lexical.currentSymbol();
         if(symbol != null && symbol.getId().equals("number")){
             lexical.nextSymbol();
             return PanicLevel.None;
@@ -1143,6 +1156,7 @@ public class SyntacticalAnalyzer {
             }
             return PanicLevel.Local;
         }
+        symbol = lexical.currentSymbol();
         if(symbol != null && symbol.getId().equals("sym_rightParenthesis")){
             lexical.nextSymbol();
         } else {
